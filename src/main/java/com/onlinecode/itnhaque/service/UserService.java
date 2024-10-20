@@ -28,8 +28,11 @@ public class UserService {
     }
 
     public User handleCreateUser(User user) {
-        Role r = this.roleService.fetchByName("USER");
-        user.setRole(r);
+        // check role
+        if (user.getRole() != null) {
+            Role r = this.roleService.fetchById(user.getRole().getId());
+            user.setRole(r != null ? r : null);
+        }
         return this.userRepository.save(user);
     }
 
@@ -41,6 +44,10 @@ public class UserService {
             userDB.setGender(reqUser.getGender());
             userDB.setAge(reqUser.getAge());
             userDB.setName(reqUser.getName());
+            if (reqUser.getRole() != null) {
+                Role r = this.roleService.fetchById(reqUser.getRole().getId());
+                userDB.setRole(r != null ? r : null);
+            }
 
             // update
             userDB = this.userRepository.save(userDB);
@@ -139,7 +146,7 @@ public class UserService {
         return res;
     }
 
-    public void updateUserToken(String token, String email) {
+    public void updateUserToken(String email, String token) {
         User currentUser = this.handleGetUserByUsername(email);
         if (currentUser != null) {
             currentUser.setRefreshToken(token);

@@ -2,6 +2,7 @@ package com.onlinecode.itnhaque.domain;
 
 import java.time.Instant;
 
+import com.onlinecode.itnhaque.util.SecurityUtil;
 import com.onlinecode.itnhaque.util.constant.GenderEnum;
 
 import jakarta.persistence.Column;
@@ -60,11 +61,19 @@ public class User {
 
     @PrePersist
     public void handleBeforeCreate() {
+        this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
+                ? SecurityUtil.getCurrentUserLogin().get()
+                : "";
+
         this.createdAt = Instant.now();
     }
 
     @PreUpdate
     public void handleBeforeUpdate() {
+        this.updatedBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
+                ? SecurityUtil.getCurrentUserLogin().get()
+                : "";
+
         this.updatedAt = Instant.now();
     }
 }

@@ -1,10 +1,5 @@
 package com.onlinecode.itnhaque.domain;
 
-import java.time.Instant;
-import java.util.List;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.onlinecode.itnhaque.util.SecurityUtil;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -14,31 +9,37 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
+
 import lombok.Getter;
 import lombok.Setter;
+import java.time.Instant;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.onlinecode.itnhaque.util.SecurityUtil;
 
 @Entity
-@Table(name = "roles")
+@Table(name = "courses")
 @Getter
 @Setter
-public class Role {
+public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotBlank(message = "Name không được để trống")
-    private String name;
+    private String title;
 
     private String description;
+    private boolean active;
+
     private Instant createdAt;
-    private Instant updatedAt;
     private String createdBy;
+    private Instant updatedAt;
     private String updatedBy;
 
-    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
-    @JsonIgnore
-    List<User> users;
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    @JsonManagedReference // Khẳng định đây là "cha" trong quan hệ
+    private List<Chapter> chapters;
 
     @PrePersist
     public void handleBeforeCreate() {
@@ -47,6 +48,7 @@ public class Role {
                 : "";
 
         this.createdAt = Instant.now();
+        this.active = false;
     }
 
     @PreUpdate
