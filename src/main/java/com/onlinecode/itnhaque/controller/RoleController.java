@@ -37,7 +37,7 @@ public class RoleController {
     public ResponseEntity<Role> create(@Valid @RequestBody Role r) throws IdInvalidException {
         // check name
         if (this.roleService.existByName(r.getName())) {
-            throw new IdInvalidException("Role với name = " + r.getName() + " đã tồn tại");
+            throw new IdInvalidException("Role with name = " + r.getName() + " does not existi");
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(this.roleService.create(r));
     }
@@ -47,7 +47,7 @@ public class RoleController {
     public ResponseEntity<Role> update(@Valid @RequestBody Role r) throws IdInvalidException {
         // check id
         if (this.roleService.fetchById(r.getId()) == null) {
-            throw new IdInvalidException("Role với id = " + r.getId() + " không tồn tại");
+            throw new IdInvalidException("Role with id = " + r.getId() + " does not exist");
         }
 
         return ResponseEntity.ok().body(this.roleService.update(r));
@@ -55,10 +55,10 @@ public class RoleController {
 
     @DeleteMapping("/roles/{id}")
     @ApiMessage("Delete a role")
-    public ResponseEntity<Void> delete(@PathVariable("id") long id) throws IdInvalidException {
+    public ResponseEntity<Void> delete(@PathVariable("id") int id) throws IdInvalidException {
         // check id
         if (this.roleService.fetchById(id) == null) {
-            throw new IdInvalidException("Role với id = " + id + " không tồn tại");
+            throw new IdInvalidException("Role with id = " + id + " does not exist");
         }
         this.roleService.delete(id);
         return ResponseEntity.ok().body(null);
@@ -73,10 +73,10 @@ public class RoleController {
 
     @GetMapping("/roles/{id}")
     @ApiMessage("Fetch role by id")
-    public ResponseEntity<Role> getById(@PathVariable("id") long id) throws IdInvalidException {
+    public ResponseEntity<Role> getById(@PathVariable("id") int id) throws IdInvalidException {
         Role role = this.roleService.fetchById(id);
         if (role == null) {
-            throw new IdInvalidException("Resume với id = " + id + " không tồn tại");
+            throw new IdInvalidException("id = " + id + " does not exist");
         }
         return ResponseEntity.ok().body(role);
     }

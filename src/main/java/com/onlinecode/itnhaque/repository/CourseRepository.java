@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import com.onlinecode.itnhaque.domain.Course;
 
 @Repository
-public interface CourseRepository extends JpaRepository<Course, Long>, JpaSpecificationExecutor<Course> {
+public interface CourseRepository extends JpaRepository<Course, Integer>, JpaSpecificationExecutor<Course> {
 
 }

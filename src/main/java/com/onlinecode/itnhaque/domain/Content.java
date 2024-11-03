@@ -16,24 +16,22 @@ import java.time.Instant;
 import com.onlinecode.itnhaque.util.SecurityUtil;
 
 @Entity
-@Table(name = "lesson_contents")
+@Table(name = "contents")
 @Getter
 @Setter
-public class LessonContent {
-
+public class Content {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // Sử dụng cùng ID với Lesson
+    private int id;
 
-    @NotBlank(message = "Course không được để trống")
-    private long courseId;
+    @NotBlank(message = "courseId cannot be empty")
+    private int courseId;
 
-    @NotBlank(message = "title không được để trống")
+    @NotBlank(message = "title cannot be empty")
     private String title;
 
-    @NotBlank(message = "title không được để trống")
     @Column(columnDefinition = "TEXT")
-    private String content; // Đây là nội dung của bài học
+    private String content;
 
     private Instant createdAt;
     private Instant updatedAt;

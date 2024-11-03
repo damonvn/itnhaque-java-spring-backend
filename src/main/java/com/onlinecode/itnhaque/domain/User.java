@@ -28,14 +28,14 @@ import lombok.Setter;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
 
     private String name;
 
-    @NotBlank(message = "email không được để trống")
+    @NotBlank(message = "email cannot be empty")
     private String email;
 
-    @NotBlank(message = "password không được để trống")
+    @NotBlank(message = "password cannot be empty")
     private String password;
 
     private int age;

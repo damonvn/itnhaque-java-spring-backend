@@ -33,7 +33,7 @@ public class ChapterController {
 
     @GetMapping("/chapter/{id}")
     @ApiMessage("Fetch chapter by id")
-    public ResponseEntity<Chapter> getById(@PathVariable("id") long id) throws IdInvalidException {
+    public ResponseEntity<Chapter> getById(@PathVariable("id") int id) throws IdInvalidException {
         Chapter chapter = this.chapterService.fetchById(id);
         if (chapter == null) {
             throw new IdInvalidException("Chapter với id = " + id + " không tồn tại");

@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import com.onlinecode.itnhaque.domain.Chapter;
 
 @Repository
-public interface ChapterRepository extends JpaRepository<Chapter, Long>, JpaSpecificationExecutor<Chapter> {
+public interface ChapterRepository extends JpaRepository<Chapter, Integer>, JpaSpecificationExecutor<Chapter> {
 
 }

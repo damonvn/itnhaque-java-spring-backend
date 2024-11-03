@@ -29,9 +29,9 @@ import com.onlinecode.itnhaque.util.SecurityUtil;
 public class Chapter {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
 
-    @NotBlank(message = "Title không được để trống")
+    @NotBlank(message = "title cannot be empty")
     private String title;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -53,7 +53,6 @@ public class Chapter {
         this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
                 ? SecurityUtil.getCurrentUserLogin().get()
                 : "";
-
         this.createdAt = Instant.now();
     }
 
@@ -62,7 +61,6 @@ public class Chapter {
         this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
                 ? SecurityUtil.getCurrentUserLogin().get()
                 : "";
-
         this.updatedAt = Instant.now();
     }
 }

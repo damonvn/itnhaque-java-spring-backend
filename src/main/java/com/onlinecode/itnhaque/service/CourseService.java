@@ -20,7 +20,7 @@ public class CourseService {
         return this.courseRepository.save(c);
     }
 
-    public Course fetchById(long id) {
+    public Course fetchById(int id) {
         Optional<Course> courseOptional = this.courseRepository.findById(id);
         if (courseOptional.isPresent()) {
             return courseOptional.get();

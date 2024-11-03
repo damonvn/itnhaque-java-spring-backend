@@ -27,7 +27,7 @@ public class ChapterService {
         return this.chapterRepository.save(c);
     }
 
-    public Chapter fetchById(long id) {
+    public Chapter fetchById(int id) {
         Optional<Chapter> chapterOptional = this.chapterRepository.findById(id);
         if (chapterOptional.isPresent()) {
             return chapterOptional.get();

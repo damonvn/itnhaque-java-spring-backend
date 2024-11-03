@@ -35,7 +35,7 @@ public class RoleService {
         return roleDB;
     }
 
-    public Role fetchById(long id) {
+    public Role fetchById(int id) {
         Optional<Role> roleOptional = this.roleRepository.findById(id);
         if (roleOptional.isPresent())
             return roleOptional.get();
@@ -49,7 +49,7 @@ public class RoleService {
         return null;
     }
 
-    public void delete(long id) {
+    public void delete(int id) {
         this.roleRepository.deleteById(id);
     }
 

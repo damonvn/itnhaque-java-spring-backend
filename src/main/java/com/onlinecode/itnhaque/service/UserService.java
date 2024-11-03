@@ -55,11 +55,11 @@ public class UserService {
         return userDB;
     }
 
-    public void handleDeleteUser(long id) {
+    public void handleDeleteUser(int id) {
         this.userRepository.deleteById(id);
     }
 
-    public User fetchUserById(long id) {
+    public User fetchUserById(int id) {
         Optional<User> userOptional = this.userRepository.findById(id);
         if (userOptional.isPresent()) {
             return userOptional.get();

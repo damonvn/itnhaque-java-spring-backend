@@ -25,9 +25,9 @@ import lombok.Setter;
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
 
-    @NotBlank(message = "Name không được để trống")
+    @NotBlank(message = "name cannot be empty")
     private String name;
 
     private String description;

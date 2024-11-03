@@ -60,7 +60,7 @@ public class UserController {
 
     @DeleteMapping("/users/{id}")
     @ApiMessage("Delete a user")
-    public ResponseEntity<Void> deleteUser(@PathVariable("id") long id)
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") int id)
             throws IdInvalidException {
         User currentUser = this.userService.fetchUserById(id);
         if (currentUser == null) {

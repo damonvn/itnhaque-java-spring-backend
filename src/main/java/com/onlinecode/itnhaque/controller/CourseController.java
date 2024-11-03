@@ -34,10 +34,10 @@ public class CourseController {
 
     @GetMapping("/course/{id}")
     @ApiMessage("Fetch course by id")
-    public ResponseEntity<Course> getById(@PathVariable("id") long id) throws IdInvalidException {
+    public ResponseEntity<Course> getById(@PathVariable("id") int id) throws IdInvalidException {
         Course course = this.courseService.fetchById(id);
         if (course == null) {
-            throw new IdInvalidException("Resume với id = " + id + " không tồn tại");
+            throw new IdInvalidException("id = " + id + " does not exist");
         }
         return ResponseEntity.ok().body(course);
     }

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.onlinecode.itnhaque.domain.LessonContent;
+import com.onlinecode.itnhaque.domain.Content;
 import com.onlinecode.itnhaque.domain.Role;
 import com.onlinecode.itnhaque.service.LessonContentService;
 import com.onlinecode.itnhaque.util.annotation.ApiMessage;
@@ -27,18 +27,18 @@ public class LessonContentController {
     }
 
     @PostMapping("/lesson")
-    @ApiMessage("Create a lesson")
-    public ResponseEntity<LessonContent> create(@Valid @RequestBody LessonContent l) throws IdInvalidException {
+    @ApiMessage("Create a lesson content")
+    public ResponseEntity<Content> create(@Valid @RequestBody Content l) throws IdInvalidException {
         // check name
         return ResponseEntity.status(HttpStatus.CREATED).body(this.lessonContentService.create(l));
     }
 
     @GetMapping("/lesson/{id}")
     @ApiMessage("Fetch lesson by id")
-    public ResponseEntity<LessonContent> getById(@PathVariable("id") long id) throws IdInvalidException {
-        LessonContent lesson = this.lessonContentService.fetchById(id);
+    public ResponseEntity<Content> getById(@PathVariable("id") int id) throws IdInvalidException {
+        Content lesson = this.lessonContentService.fetchById(id);
         if (lesson == null) {
-            throw new IdInvalidException("Resume với id = " + id + " không tồn tại");
+            throw new IdInvalidException("id = " + id + " does not exist");
         }
         return ResponseEntity.ok().body(lesson);
     }

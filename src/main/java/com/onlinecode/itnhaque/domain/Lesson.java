@@ -26,24 +26,17 @@ import com.onlinecode.itnhaque.util.SecurityUtil;
 public class Lesson {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
 
-    @NotBlank(message = "Title không được để trống")
+    @NotBlank(message = "title canot be empty")
     private String title;
-
-    @NotBlank(message = "Course không được để trống")
-    private long courseId;
-
-    @NotBlank(message = "Content không được để trống")
-    private long contentId;
-
     private String linkVideo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chapter_id")
     @JsonBackReference // Khẳng định đây là "con", không serialize ngược lại "cha"
     private Chapter chapter;
-
+    private int contentId;
     private Instant createdAt;
     private String createdBy;
     private Instant updatedAt;
@@ -54,7 +47,6 @@ public class Lesson {
         this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
                 ? SecurityUtil.getCurrentUserLogin().get()
                 : "";
-
         this.createdAt = Instant.now();
     }
 
@@ -63,7 +55,6 @@ public class Lesson {
         this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
                 ? SecurityUtil.getCurrentUserLogin().get()
                 : "";
-
         this.updatedAt = Instant.now();
     }
 }
