@@ -34,8 +34,10 @@ public class Lesson {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chapter_id")
-    @JsonBackReference // Khẳng định đây là "con", không serialize ngược lại "cha"
+    @JsonBackReference
     private Chapter chapter;
+
+    private int courseId;
     private int contentId;
     private Instant createdAt;
     private String createdBy;

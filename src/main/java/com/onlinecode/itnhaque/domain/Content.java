@@ -23,8 +23,6 @@ public class Content {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-    @NotBlank(message = "courseId cannot be empty")
     private int courseId;
 
     @NotBlank(message = "title cannot be empty")

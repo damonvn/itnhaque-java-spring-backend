@@ -36,7 +36,7 @@ public class Chapter {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id")
-    @JsonBackReference // Khẳng định đây là "con", không serialize ngược lại "cha"
+    @JsonBackReference
     private Course course;
 
     @OneToMany(mappedBy = "chapter", fetch = FetchType.LAZY)

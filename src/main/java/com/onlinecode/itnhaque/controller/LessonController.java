@@ -8,35 +8,32 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.onlinecode.itnhaque.domain.Content;
-import com.onlinecode.itnhaque.domain.Role;
-import com.onlinecode.itnhaque.service.LessonContentService;
+import com.onlinecode.itnhaque.domain.Lesson;
+import com.onlinecode.itnhaque.service.LessonService;
 import com.onlinecode.itnhaque.util.annotation.ApiMessage;
 import com.onlinecode.itnhaque.util.error.IdInvalidException;
-
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1")
-public class LessonContentController {
-    private final LessonContentService lessonContentService;
+public class LessonController {
+    private final LessonService lessonService;
 
-    public LessonContentController(LessonContentService lessonContentService) {
-        this.lessonContentService = lessonContentService;
+    public LessonController(LessonService lessonService) {
+        this.lessonService = lessonService;
     }
 
     @PostMapping("/lesson")
-    @ApiMessage("Create a lesson content")
-    public ResponseEntity<Content> create(@Valid @RequestBody Content l) throws IdInvalidException {
+    @ApiMessage("Create a lesson")
+    public ResponseEntity<Lesson> create(@Valid @RequestBody Lesson l) throws IdInvalidException {
         // check name
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.lessonContentService.create(l));
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.lessonService.create(l));
     }
 
     @GetMapping("/lesson/{id}")
     @ApiMessage("Fetch lesson by id")
-    public ResponseEntity<Content> getById(@PathVariable("id") int id) throws IdInvalidException {
-        Content lesson = this.lessonContentService.fetchById(id);
+    public ResponseEntity<Lesson> getById(@PathVariable("id") int id) throws IdInvalidException {
+        Lesson lesson = this.lessonService.fetchById(id);
         if (lesson == null) {
             throw new IdInvalidException("id = " + id + " does not exist");
         }
