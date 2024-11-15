@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -41,6 +42,7 @@ public class Course {
 
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
     @JsonManagedReference // Khẳng định đây là "cha" trong quan hệ
+    @OrderBy("indexInCourse asc")
     private List<Chapter> chapters;
 
     @PrePersist

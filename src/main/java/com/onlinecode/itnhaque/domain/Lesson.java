@@ -37,6 +37,7 @@ public class Lesson {
     @JsonBackReference
     private Chapter chapter;
 
+    private int indexInChapter;
     private int courseId;
     private int contentId;
     private Instant createdAt;

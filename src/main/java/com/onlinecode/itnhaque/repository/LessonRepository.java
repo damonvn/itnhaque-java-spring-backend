@@ -8,5 +8,5 @@ import com.onlinecode.itnhaque.domain.Lesson;
 
 @Repository
 public interface LessonRepository extends JpaRepository<Lesson, Integer>,
-        JpaSpecificationExecutor<Lesson> {
+                JpaSpecificationExecutor<Lesson> {
 }

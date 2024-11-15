@@ -8,11 +8,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.onlinecode.itnhaque.domain.Content;
 import com.onlinecode.itnhaque.domain.Lesson;
 import com.onlinecode.itnhaque.service.LessonService;
 import com.onlinecode.itnhaque.util.annotation.ApiMessage;
 import com.onlinecode.itnhaque.util.error.IdInvalidException;
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -25,7 +28,7 @@ public class LessonController {
 
     @PostMapping("/lesson")
     @ApiMessage("Create a lesson")
-    public ResponseEntity<Lesson> create(@Valid @RequestBody Lesson l) throws IdInvalidException {
+    public ResponseEntity<Content> create(@Valid @RequestBody Lesson l) throws IdInvalidException {
         // check name
         return ResponseEntity.status(HttpStatus.CREATED).body(this.lessonService.create(l));
     }
@@ -38,5 +41,12 @@ public class LessonController {
             throw new IdInvalidException("id = " + id + " does not exist");
         }
         return ResponseEntity.ok().body(lesson);
+    }
+
+    @PutMapping("/lesson/content")
+    @ApiMessage("Update lesson content")
+    public ResponseEntity<Content> updateLessonContent(@Valid @RequestBody Content c) throws IdInvalidException {
+        Content content = this.lessonService.handleUpdateLessonContent(c);
+        return ResponseEntity.ok().body(content);
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.onlinecode.itnhaque.domain.Chapter;
+import com.onlinecode.itnhaque.domain.Content;
 import com.onlinecode.itnhaque.service.ChapterService;
 import com.onlinecode.itnhaque.util.annotation.ApiMessage;
 import com.onlinecode.itnhaque.util.error.IdInvalidException;
@@ -27,7 +28,7 @@ public class ChapterController {
 
     @PostMapping("/chapter")
     @ApiMessage("Create a chapter")
-    public ResponseEntity<Chapter> create(@Valid @RequestBody Chapter c) throws IdInvalidException {
+    public ResponseEntity<Content> create(@Valid @RequestBody Chapter c) throws IdInvalidException {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.chapterService.create(c));
     }
 

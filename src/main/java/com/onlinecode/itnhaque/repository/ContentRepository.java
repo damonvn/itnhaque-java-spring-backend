@@ -8,5 +8,5 @@ import com.onlinecode.itnhaque.domain.Content;
 
 @Repository
 public interface ContentRepository extends JpaRepository<Content, Integer>,
-                JpaSpecificationExecutor<Content> {
+        JpaSpecificationExecutor<Content> {
 }

@@ -11,8 +11,6 @@ import com.onlinecode.itnhaque.repository.ContentRepository;
 import com.onlinecode.itnhaque.repository.CourseRepository;
 import com.onlinecode.itnhaque.repository.LessonRepository;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -35,22 +33,31 @@ public class CourseService {
 
         // create chapter
         Chapter chapter = new Chapter();
-        chapter.setTitle("Default Chapter Title");
+        chapter.setTitle("Chapter Title");
         chapter.setCourse(courseDB);
+        chapter.setIndexInCourse(0);
         Chapter chapterDB = this.chapterRepository.save(chapter);
-
-        // create content
-        Content content = new Content();
-        content.setTitle("Default Lesson Title");
-        content.setCourseId(courseDB.getId());
-        Content contentDB = this.contentRepository.save(content);
 
         // create lesson
         Lesson lesson = new Lesson();
-        lesson.setTitle(contentDB.getTitle());
-        lesson.setContentId(contentDB.getId());
+        lesson.setTitle("Lesson title");
+        lesson.setCourseId(courseDB.getId());
         lesson.setChapter(chapterDB);
-        this.lessonRepository.save(lesson);
+        lesson.setIndexInChapter(0);
+        Lesson lessonDB = this.lessonRepository.save(lesson);
+
+        // create content
+        Content content = new Content();
+        content.setTitle(lessonDB.getTitle());
+        content.setContent("Lesson content");
+        content.setCourseId(courseDB.getId());
+        content.setChapterId(chapterDB.getId());
+        content.setLessonId(lessonDB.getId());
+        Content contentDB = this.contentRepository.save(content);
+
+        // update lesson contentId
+        lessonDB.setContentId(contentDB.getId());
+        this.lessonRepository.save(lessonDB);
 
         return fetchById(courseDB.getId());
     }

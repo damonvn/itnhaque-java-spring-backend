@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -39,8 +40,11 @@ public class Chapter {
     @JsonBackReference
     private Course course;
 
+    private int indexInCourse;
+
     @OneToMany(mappedBy = "chapter", fetch = FetchType.LAZY)
     @JsonManagedReference
+    @OrderBy("indexInChapter asc")
     private List<Lesson> lessons;
 
     private Instant createdAt;
