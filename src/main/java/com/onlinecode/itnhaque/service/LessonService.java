@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.onlinecode.itnhaque.domain.Chapter;
 import com.onlinecode.itnhaque.domain.Content;
 import com.onlinecode.itnhaque.domain.Lesson;
+import com.onlinecode.itnhaque.domain.request.ReqUpdateLessonVideo;
 import com.onlinecode.itnhaque.repository.ContentRepository;
 import com.onlinecode.itnhaque.repository.LessonRepository;
 
@@ -59,19 +60,25 @@ public class LessonService {
         Lesson lessonDB = this.fetchById(content.getLessonId());
         if (lessonDB != null) {
             lessonDB.setTitle(content.getTitle());
+            lessonDB.setLinkVideo(content.getLessonVideoURL());
             this.lessonRepository.save(lessonDB);
         }
         Content contentDB = this.contentRepository.save(content);
         return contentDB;
     }
 
-    public Content handleUpdateLesson(Lesson lesson) {
-        this.lessonRepository.save(lesson);
-        Content contentDB = this.contentService.fetchById(lesson.getContentId());
-        return contentDB;
+    public Content handleUpdateLessonVideo(ReqUpdateLessonVideo req) {
+        Lesson lessonDB = fetchById(req.getLessonId());
+        lessonDB.setLinkVideo(req.getLessonVideoURL());
+        this.lessonRepository.save(lessonDB);
+
+        Content contentDB = this.contentService.fetchById(lessonDB.getContentId());
+        contentDB.setLessonVideoURL(req.getLessonVideoURL());
+        Content resContent = this.contentRepository.save(contentDB);
+        return resContent;
     }
 
-    public Lesson fetchById(Integer id) {
+    public Lesson fetchById(int id) {
         Optional<Lesson> optionalLesson = this.lessonRepository.findById(id);
         if (optionalLesson.isPresent()) {
             return optionalLesson.get();

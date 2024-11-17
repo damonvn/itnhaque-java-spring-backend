@@ -26,7 +26,7 @@ public class Content {
     private int courseId;
     private int chapterId;
     private int lessonId;
-
+    private String lessonVideoURL;
     @NotBlank(message = "title cannot be empty")
     private String title;
 

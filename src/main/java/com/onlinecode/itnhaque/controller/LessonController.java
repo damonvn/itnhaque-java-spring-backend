@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.onlinecode.itnhaque.domain.Content;
 import com.onlinecode.itnhaque.domain.Lesson;
+import com.onlinecode.itnhaque.domain.request.ReqUpdateLessonVideo;
 import com.onlinecode.itnhaque.service.LessonService;
 import com.onlinecode.itnhaque.util.annotation.ApiMessage;
 import com.onlinecode.itnhaque.util.error.IdInvalidException;
@@ -43,10 +44,19 @@ public class LessonController {
         return ResponseEntity.ok().body(lesson);
     }
 
-    @PutMapping("/lesson/content")
-    @ApiMessage("Update lesson content")
-    public ResponseEntity<Content> updateLessonContent(@Valid @RequestBody Content c) throws IdInvalidException {
+    @PutMapping("/lesson/update")
+    @ApiMessage("Update lesson")
+    public ResponseEntity<Content> updateLessonContent(@Valid @RequestBody Content c)
+            throws IdInvalidException {
         Content content = this.lessonService.handleUpdateLessonContent(c);
+        return ResponseEntity.ok().body(content);
+    }
+
+    @PutMapping("/lesson/video")
+    @ApiMessage("Update lesson video")
+    public ResponseEntity<Content> updateLessonVideo(@Valid @RequestBody ReqUpdateLessonVideo req)
+            throws IdInvalidException {
+        Content content = this.lessonService.handleUpdateLessonVideo(req);
         return ResponseEntity.ok().body(content);
     }
 }
