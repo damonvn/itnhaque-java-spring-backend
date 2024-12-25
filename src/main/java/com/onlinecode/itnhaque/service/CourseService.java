@@ -59,7 +59,8 @@ public class CourseService {
         lessonDB.setContentId(contentDB.getId());
         this.lessonRepository.save(lessonDB);
 
-        return fetchById(courseDB.getId());
+        // return fetchById(courseDB.getId());
+        return courseDB;
     }
 
     public Course fetchById(int id) {
@@ -70,4 +71,14 @@ public class CourseService {
         return null;
     }
 
+    public Course clientFetchById(int id) {
+        Optional<Course> courseOptional = this.courseRepository.findById(id);
+        if (courseOptional.isPresent()) {
+            Course courseDB = courseOptional.get();
+            if (!courseDB.isActive()) {
+                return courseDB;
+            }
+        }
+        return null;
+    }
 }
