@@ -25,6 +25,11 @@ public class UserDetailsCustom implements UserDetailsService {
             throw new UsernameNotFoundException("Username/password không hợp lệ");
         }
 
+        String roleName = user.getRole().getName();
+        if (roleName == null || roleName.isEmpty()) {
+            throw new IllegalStateException("Role name is missing for user: " + user.getEmail());
+        }
+
         return new User(
                 user.getEmail(),
                 user.getPassword(),

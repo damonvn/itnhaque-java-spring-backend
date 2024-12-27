@@ -32,7 +32,7 @@ public class RoleController {
         this.roleService = roleService;
     }
 
-    @PostMapping("/roles")
+    @PostMapping("/role")
     @ApiMessage("Create a role")
     public ResponseEntity<Role> create(@Valid @RequestBody Role r) throws IdInvalidException {
         // check name
@@ -42,7 +42,7 @@ public class RoleController {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.roleService.create(r));
     }
 
-    @PutMapping("/roles")
+    @PutMapping("/role")
     @ApiMessage("Update a role")
     public ResponseEntity<Role> update(@Valid @RequestBody Role r) throws IdInvalidException {
         // check id
@@ -53,7 +53,7 @@ public class RoleController {
         return ResponseEntity.ok().body(this.roleService.update(r));
     }
 
-    @DeleteMapping("/roles/{id}")
+    @DeleteMapping("/role/{id}")
     @ApiMessage("Delete a role")
     public ResponseEntity<Void> delete(@PathVariable("id") int id) throws IdInvalidException {
         // check id
@@ -64,14 +64,14 @@ public class RoleController {
         return ResponseEntity.ok().body(null);
     }
 
-    @GetMapping("/roles")
+    @GetMapping("/role")
     @ApiMessage("Fetch all roles")
     public ResponseEntity<ResultPaginationDTO> getRolls(
             @Filter Specification<Role> spec, Pageable pageable) {
         return ResponseEntity.ok(this.roleService.getRoles(spec, pageable));
     }
 
-    @GetMapping("/roles/{id}")
+    @GetMapping("/role/{id}")
     @ApiMessage("Fetch role by id")
     public ResponseEntity<Role> getById(@PathVariable("id") int id) throws IdInvalidException {
         Role role = this.roleService.fetchById(id);

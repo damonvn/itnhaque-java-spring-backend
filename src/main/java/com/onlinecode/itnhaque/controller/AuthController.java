@@ -12,7 +12,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.onlinecode.itnhaque.domain.User;
 import com.onlinecode.itnhaque.domain.request.ReqLoginDTO;
@@ -22,6 +25,8 @@ import com.onlinecode.itnhaque.util.SecurityUtil;
 
 import jakarta.validation.Valid;
 
+@RestController
+@RequestMapping("/api/v1")
 public class AuthController {
         private final AuthenticationManagerBuilder authenticationManagerBuilder;
         private final SecurityUtil securityUtil;
@@ -40,6 +45,7 @@ public class AuthController {
                 this.userService = userService;
         }
 
+        @PostMapping("/auth/login")
         public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody ReqLoginDTO loginDto) {
                 // Create an authentication token using the username and password
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
