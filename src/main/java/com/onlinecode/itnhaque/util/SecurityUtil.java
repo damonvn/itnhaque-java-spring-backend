@@ -2,6 +2,9 @@ package com.onlinecode.itnhaque.util;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 import javax.crypto.SecretKey;
@@ -9,8 +12,10 @@ import javax.crypto.spec.SecretKeySpec;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,8 +25,10 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.nimbusds.jose.util.Base64;
 import com.onlinecode.itnhaque.domain.response.ResLoginDTO;
@@ -101,17 +108,43 @@ public class SecurityUtil {
     public Jwt checkValidRefreshToken(String token){
      NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(
                 getSecretKey()).macAlgorithm(SecurityUtil.JWT_ALGORITHM).build();
+
                 try {
-                     return jwtDecoder.decode(token);
+                    return jwtDecoder.decode(token);
+                } catch (JwtException e) {
+                    System.out.println(">>> JWT Error: " + e.getMessage());
+                    // Kiểm tra thông báo lỗi để phân loại
+                    if (e.getMessage().contains("expired")) {
+                        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token has expired", e);
+                    } else {
+                        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token", e);
+                    }
                 } catch (Exception e) {
-                    System.out.println(">>> Refresh Token error: " + e.getMessage());
-                    throw e;
+                    System.out.println(">>> Other error: " + e.getMessage());
+                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error", e);
                 }
-    }
+            }
 
     private SecretKey getSecretKey() {
         byte[] keyBytes = Base64.from(jwtKey).decode();
         return new SecretKeySpec(keyBytes, 0, keyBytes.length,
                 JWT_ALGORITHM.getName());
+    }
+    
+    public String extractAuthoritiesFromToken(Jwt decodedToken) {
+        // Lấy claim "auth" từ token
+        String authClaim = decodedToken.getClaim("auth");
+        if (authClaim == null || authClaim.isEmpty()) {
+            return "";
+        }
+    
+        // Chuyển chuỗi phân cách bởi dấu phẩy thành danh sách authorities
+        Collection<GrantedAuthority> authorities = Arrays.stream(authClaim.split(","))
+                     .map(String::trim) // Xóa khoảng trắng dư thừa
+                     .map(SimpleGrantedAuthority::new) // Chuyển thành GrantedAuthority
+                     .collect(Collectors.toList());
+        // Lấy tên quyền từ mỗi GrantedAuthority
+        String res = authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(" "));
+        return res;
     }
 }

@@ -48,18 +48,19 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http,
             CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
         String[] whiteList = {
-                "/", "/api/v1/auth/login", "/api/v1/auth/logout", "/api/v1/auth/account", "/api/v1/auth/refresh",
+                "/api/v1/auth/login", "/api/v1/auth/logout", "/api/v1/auth/account", "/api/v1/auth/refresh",
         };
         http
                 .csrf(f -> f.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(
                         authz -> authz
-                                // .requestMatchers(whiteList).permitAll()
+                                .requestMatchers(whiteList).permitAll()
                                 // .requestMatchers("/jwtkey").hasAuthority("ROLE_USER")
                                 // .requestMatchers("/secretkey").hasAuthority("ROLE_ADMIN")
                                 // .requestMatchers("/api/v1/users/**").hasAuthority("ROLE_ADMIN")
                                 // .requestMatchers("/api/v1/lesson/**").permitAll()
+                                .requestMatchers("/").hasAuthority("ROLE_ADMIN")
                                 .anyRequest().permitAll())
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults())
                         .authenticationEntryPoint(customAuthenticationEntryPoint))
