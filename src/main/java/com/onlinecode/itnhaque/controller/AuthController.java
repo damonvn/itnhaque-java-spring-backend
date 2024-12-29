@@ -1,7 +1,6 @@
 package com.onlinecode.itnhaque.controller;
 
 import java.util.stream.Collectors;
-import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -24,11 +23,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.onlinecode.itnhaque.domain.User;
 import com.onlinecode.itnhaque.domain.request.ReqLoginDTO;
 import com.onlinecode.itnhaque.domain.response.ResLoginDTO;
+import com.onlinecode.itnhaque.domain.response.ResRefreshToken;
 import com.onlinecode.itnhaque.service.UserService;
 import com.onlinecode.itnhaque.util.SecurityUtil;
 import com.onlinecode.itnhaque.util.annotation.ApiMessage;
 import com.onlinecode.itnhaque.util.error.IdInvalidException;
-
 import jakarta.validation.Valid;
 
 @RestController
@@ -86,11 +85,10 @@ public class AuthController {
 
                 // create refresh token
                 String refresh_token = this.securityUtil.createRefreshToken(authentication.getName(), authorities);
+                userDTO.setRefreshToken(refresh_token);
 
                 // update user
                 this.userService.updateUserToken(loginDto.getUsername(), refresh_token);
-
-                userDTO.setRefreshToken(refresh_token);
 
                 // set cookies
                 ResponseCookie resCookies = ResponseCookie
@@ -144,14 +142,7 @@ public class AuthController {
                 Jwt decodedToken = this.securityUtil.checkValidRefreshToken(refresh_token);
                 String email = decodedToken.getSubject();
 
-                // check user by token + email
-                User currentUser = this.userService.getUserByRefreshTokenAndEmail(refresh_token, email);
-                if (currentUser == null) {
-                        throw new IdInvalidException("Refresh Token không hợp lệ");
-                }
-
-                // issue new token/set refresh token as cookies
-                ResLoginDTO res = new ResLoginDTO();
+                ResLoginDTO userDTO = new ResLoginDTO();
                 User currentUserDB = this.userService.handleGetUserByUsername(email);
                 if (currentUserDB != null) {
                         ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
@@ -159,7 +150,13 @@ public class AuthController {
                                         currentUserDB.getEmail(),
                                         currentUserDB.getName(),
                                         currentUserDB.getRole().getName());
-                        res.setUser(userLogin);
+                        userDTO.setUser(userLogin);
+                }
+
+                // check user by token + email
+                User currentUser = this.userService.getUserByRefreshTokenAndEmail(refresh_token, email);
+                if (currentUser == null) {
+                        throw new IdInvalidException("Refresh Token không hợp lệ");
                 }
 
                 //
@@ -167,13 +164,11 @@ public class AuthController {
 
                 // create access token
                 String access_token = this.securityUtil.createAccessToken(email, authorities);
-                res.setAccessToken(access_token);
+                userDTO.setAccessToken(access_token);
 
                 // create refresh token
                 String new_refresh_token = this.securityUtil.createRefreshToken(email, authorities);
-
-                res.setRefreshToken(new_refresh_token);
-
+                userDTO.setRefreshToken(new_refresh_token);
                 // update user
                 this.userService.updateUserToken(email, new_refresh_token);
 
@@ -188,6 +183,6 @@ public class AuthController {
 
                 return ResponseEntity.ok()
                                 .header(HttpHeaders.SET_COOKIE, resCookies.toString())
-                                .body(res);
+                                .body(userDTO);
         }
 }
