@@ -154,7 +154,7 @@ public class UserService {
         }
     }
 
-    public User getUserByRefreshTokenAndEmail(String token, String email) {
-        return this.userRepository.findByRefreshTokenAndEmail(token, email);
+    public User getUserByEmailAndRefreshToken(String email, String token) {
+        return this.userRepository.findByEmailAndRefreshToken(email, token);
     }
 }

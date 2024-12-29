@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.onlinecode.itnhaque.domain.User;
 import com.onlinecode.itnhaque.domain.request.ReqLoginDTO;
 import com.onlinecode.itnhaque.domain.response.ResLoginDTO;
-import com.onlinecode.itnhaque.domain.response.ResRefreshToken;
 import com.onlinecode.itnhaque.service.UserService;
 import com.onlinecode.itnhaque.util.SecurityUtil;
 import com.onlinecode.itnhaque.util.annotation.ApiMessage;
@@ -104,6 +103,34 @@ public class AuthController {
                                 .body(userDTO);
         }
 
+        @PostMapping("/auth/logout")
+        @ApiMessage("Logout User")
+        public ResponseEntity<Void> logout() throws IdInvalidException {
+                String email = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get()
+                                : "";
+
+                if (email.equals("")) {
+                        throw new IdInvalidException("Access Token không hợp lệ");
+                }
+
+                // update refresh token in database
+                this.userService.updateUserToken(email, null);
+
+                // remove refresh token cookie
+                @SuppressWarnings("null")
+                ResponseCookie deleteSpringCookie = ResponseCookie
+                                .from("refresh_token", null)
+                                .httpOnly(true)
+                                .secure(true)
+                                .path("/")
+                                .maxAge(0)
+                                .build();
+
+                return ResponseEntity.ok()
+                                .header(HttpHeaders.SET_COOKIE, deleteSpringCookie.toString())
+                                .body(null);
+        }
+
         @GetMapping("/auth/account")
         @ApiMessage("fetch account")
         public ResponseEntity<ResLoginDTO.UserGetAccount> getAccount() throws IdInvalidException {
@@ -154,7 +181,7 @@ public class AuthController {
                 }
 
                 // check user by token + email
-                User currentUser = this.userService.getUserByRefreshTokenAndEmail(refresh_token, email);
+                User currentUser = this.userService.getUserByEmailAndRefreshToken(email, refresh_token);
                 if (currentUser == null) {
                         throw new IdInvalidException("Refresh Token không hợp lệ");
                 }
