@@ -5,11 +5,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.onlinecode.itnhaque.domain.Category;
 import com.onlinecode.itnhaque.domain.Chapter;
 import com.onlinecode.itnhaque.domain.Content;
 import com.onlinecode.itnhaque.domain.Course;
 import com.onlinecode.itnhaque.domain.Lesson;
-import com.onlinecode.itnhaque.domain.Role;
+import com.onlinecode.itnhaque.domain.Skill;
 import com.onlinecode.itnhaque.domain.response.ResCourseDTO;
 import com.onlinecode.itnhaque.domain.response.ResultPaginationDTO;
 import com.onlinecode.itnhaque.repository.ChapterRepository;
@@ -27,18 +28,34 @@ public class CourseService {
     private final ChapterRepository chapterRepository;
     private final LessonRepository lessonRepository;
     private final ContentRepository contentRepository;
+    private final SkillService skillService;
+    private final CategoryService categoryService;
 
     public CourseService(CourseRepository courseRepository, ChapterRepository chapterRepository,
-            LessonRepository lessonRepository, ContentRepository contentRepository) {
+            LessonRepository lessonRepository, ContentRepository contentRepository,
+            SkillService skillService, CategoryService categoryService) {
         this.courseRepository = courseRepository;
         this.chapterRepository = chapterRepository;
         this.lessonRepository = lessonRepository;
         this.contentRepository = contentRepository;
+        this.skillService = skillService;
+        this.categoryService = categoryService;
     }
 
     public Course create(Course c) {
-        Course courseDB = this.courseRepository.save(c);
+        // check category
+        if (c.getSkill() != null) {
+            Category category = this.categoryService.fetchById(c.getCategory().getId());
+            c.setCategory(category != null ? category : null);
+        }
 
+        // check skill
+        if (c.getSkill() != null) {
+            Skill skill = this.skillService.fetchById(c.getSkill().getId());
+            c.setSkill(skill != null ? skill : null);
+        }
+
+        Course courseDB = this.courseRepository.save(c);
         // create chapter
         Chapter chapter = new Chapter();
         chapter.setTitle("Chapter Title");
@@ -89,6 +106,18 @@ public class CourseService {
             courseDTO.setImage(courseEntity.getImage());
             courseDTO.setDescription(courseEntity.getDescription());
             courseDTO.setActive(courseEntity.isActive());
+            // set Category
+            ResCourseDTO.CourseCategory category = new ResCourseDTO.CourseCategory();
+            category.setId(courseEntity.getCategory().getId());
+            category.setValue(courseEntity.getCategory().getValue());
+            category.setLabel(courseEntity.getCategory().getName());
+            courseDTO.setCategory(category);
+            // set skill
+            ResCourseDTO.CourseSkill skill = new ResCourseDTO.CourseSkill();
+            skill.setId(courseEntity.getSkill().getId());
+            skill.setValue(courseEntity.getSkill().getValue());
+            skill.setLabel(courseEntity.getSkill().getName());
+            courseDTO.setSkill(skill);
             courseDTO.setCreatedAt(courseEntity.getCreatedAt());
             courseDTO.setCreatedBy(courseEntity.getCreatedBy());
             courseDTO.setUpdatedAt(courseEntity.getUpdatedAt());

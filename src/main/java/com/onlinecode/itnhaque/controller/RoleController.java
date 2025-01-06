@@ -37,7 +37,7 @@ public class RoleController {
     public ResponseEntity<Role> create(@Valid @RequestBody Role r) throws IdInvalidException {
         // check name
         if (this.roleService.existByName(r.getName())) {
-            throw new IdInvalidException("Role with name = " + r.getName() + " does not existi");
+            throw new IdInvalidException("Role with name = " + r.getName() + " already existed");
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(this.roleService.create(r));
     }
