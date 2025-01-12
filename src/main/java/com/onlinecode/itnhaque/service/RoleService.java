@@ -1,5 +1,6 @@
 package com.onlinecode.itnhaque.service;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,8 +32,8 @@ public class RoleService {
         Role roleDB = this.fetchById(r.getId());
         roleDB.setName(r.getName());
         roleDB.setDescription(r.getDescription());
-        roleDB = this.roleRepository.save(roleDB);
-        return roleDB;
+        Role roleUpdate = this.roleRepository.save(roleDB);
+        return roleUpdate;
     }
 
     public Role fetchById(int id) {
@@ -53,7 +54,7 @@ public class RoleService {
         this.roleRepository.deleteById(id);
     }
 
-    public ResultPaginationDTO getRoles(Specification<Role> spec, Pageable pageable) {
+    public ResultPaginationDTO fetchRoles(Specification<Role> spec, Pageable pageable) {
         Page<Role> pRole = this.roleRepository.findAll(spec, pageable);
         ResultPaginationDTO rs = new ResultPaginationDTO();
         ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
@@ -67,5 +68,10 @@ public class RoleService {
         rs.setMeta(mt);
         rs.setResult(pRole.getContent());
         return rs;
+    }
+
+    public List<Role> fetchAllRoles() {
+        List<Role> roles = this.roleRepository.findAll();
+        return roles;
     }
 }

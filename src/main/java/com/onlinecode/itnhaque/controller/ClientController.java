@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.onlinecode.itnhaque.domain.Course;
 import com.onlinecode.itnhaque.domain.request.ReqContentId;
+import com.onlinecode.itnhaque.domain.response.ResContentDTO;
 import com.onlinecode.itnhaque.domain.response.ResLessonParameters;
-import com.onlinecode.itnhaque.domain.Chapter;
 import com.onlinecode.itnhaque.domain.Content;
 import com.onlinecode.itnhaque.service.CourseService;
 import com.onlinecode.itnhaque.service.ClientService;
@@ -50,6 +50,13 @@ public class ClientController {
     @ApiMessage("Fetch content by id")
     public ResponseEntity<Content> getContentById(@PathVariable("id") int id) throws IdInvalidException {
         Content content = this.contentService.clientFetchById(id);
+        return ResponseEntity.ok().body(content);
+    }
+
+    @GetMapping("/client/content/dto/{id}")
+    @ApiMessage("Fetch content by id")
+    public ResponseEntity<ResContentDTO> getContentDTOById(@PathVariable("id") int id) throws IdInvalidException {
+        ResContentDTO content = this.contentService.fetchClientResContentDTOById(id);
         return ResponseEntity.ok().body(content);
     }
 

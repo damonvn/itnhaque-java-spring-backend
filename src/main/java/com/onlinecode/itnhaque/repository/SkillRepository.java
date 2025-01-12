@@ -7,5 +7,7 @@ import com.onlinecode.itnhaque.domain.Skill;
 
 public interface SkillRepository extends JpaRepository<Skill, Integer>,
                 JpaSpecificationExecutor<Skill> {
+        boolean existsByName(String value);
+
         boolean existsByValue(String value);
 }

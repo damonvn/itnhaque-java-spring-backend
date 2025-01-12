@@ -10,4 +10,6 @@ import com.onlinecode.itnhaque.domain.Category;
 public interface CategoryRepository extends JpaRepository<Category, Integer>,
                 JpaSpecificationExecutor<Category> {
         boolean existsByValue(String value);
+
+        boolean existsByName(String name);
 }

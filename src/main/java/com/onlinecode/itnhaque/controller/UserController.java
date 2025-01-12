@@ -37,7 +37,7 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @PostMapping("/users")
+    @PostMapping("/user")
     @ApiMessage("Create a new user")
     public ResponseEntity<ResCreateUserDTO> createNewUser(@Valid @RequestBody User reqUser)
             throws IdInvalidException {
@@ -53,7 +53,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.convertToResCreateUserDTO(resUser));
     }
 
-    @PutMapping("/users")
+    @PutMapping("/user")
     @ApiMessage("Update a user")
     public ResponseEntity<ResUpdateUserDTO> updateUser(@RequestBody User reqUser) throws IdInvalidException {
         User resUser = this.userService.handleUpdateUser(reqUser);
@@ -63,7 +63,7 @@ public class UserController {
         return ResponseEntity.ok(this.userService.convertToResUpdateUserDTO(resUser));
     }
 
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/user/{id}")
     @ApiMessage("Delete a user")
     public ResponseEntity<Void> deleteUser(@PathVariable("id") int id)
             throws IdInvalidException {
@@ -76,7 +76,7 @@ public class UserController {
         return ResponseEntity.ok(null);
     }
 
-    @GetMapping("/users")
+    @GetMapping("/user")
     @ApiMessage("Get all users")
     public ResponseEntity<ResultPaginationDTO> getUsers(@Filter Specification<User> spec, Pageable pageable) {
         return ResponseEntity.ok(this.userService.fetchAllUsers(spec, pageable));

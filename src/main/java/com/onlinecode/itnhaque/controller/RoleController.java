@@ -1,5 +1,7 @@
 package com.onlinecode.itnhaque.controller;
 
+import java.util.List;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -35,9 +37,8 @@ public class RoleController {
     @PostMapping("/role")
     @ApiMessage("Create a role")
     public ResponseEntity<Role> create(@Valid @RequestBody Role r) throws IdInvalidException {
-        // check name
         if (this.roleService.existByName(r.getName())) {
-            throw new IdInvalidException("Role with name = " + r.getName() + " already existed");
+            throw new IdInvalidException("Role with name = " + r.getName() + " already exists");
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(this.roleService.create(r));
     }
@@ -49,7 +50,11 @@ public class RoleController {
         if (this.roleService.fetchById(r.getId()) == null) {
             throw new IdInvalidException("Role with id = " + r.getId() + " does not exist");
         }
+        String name = this.roleService.fetchById(r.getId()).getName();
 
+        if (!name.equals(r.getName()) && this.roleService.existByName(r.getName())) {
+            throw new IdInvalidException("The name = " + r.getName() + " already exists");
+        }
         return ResponseEntity.ok().body(this.roleService.update(r));
     }
 
@@ -65,10 +70,16 @@ public class RoleController {
     }
 
     @GetMapping("/role")
-    @ApiMessage("Fetch all roles")
-    public ResponseEntity<ResultPaginationDTO> getRolls(
+    @ApiMessage("Fetch roles")
+    public ResponseEntity<ResultPaginationDTO> fetchRoles(
             @Filter Specification<Role> spec, Pageable pageable) {
-        return ResponseEntity.ok(this.roleService.getRoles(spec, pageable));
+        return ResponseEntity.ok(this.roleService.fetchRoles(spec, pageable));
+    }
+
+    @GetMapping("/role/all")
+    @ApiMessage("Fetch all roles")
+    public ResponseEntity<List<Role>> fetchAllRoles() {
+        return ResponseEntity.ok(this.roleService.fetchAllRoles());
     }
 
     @GetMapping("/role/{id}")
