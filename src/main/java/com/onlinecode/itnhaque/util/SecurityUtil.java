@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Optional;
 
 import javax.crypto.SecretKey;
@@ -31,7 +30,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.nimbusds.jose.util.Base64;
-import com.onlinecode.itnhaque.domain.response.ResLoginDTO;
 
 @Service
 public class SecurityUtil {

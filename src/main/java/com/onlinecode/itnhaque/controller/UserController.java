@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.onlinecode.itnhaque.domain.User;
+import com.onlinecode.itnhaque.domain.request.ReqChangeUserPasswordDTO;
 import com.onlinecode.itnhaque.domain.response.ResCreateUserDTO;
 import com.onlinecode.itnhaque.domain.response.ResUpdateUserDTO;
 import com.onlinecode.itnhaque.domain.response.ResultPaginationDTO;
@@ -29,7 +30,6 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/v1")
 public class UserController {
     private final UserService userService;
-
     private final PasswordEncoder passwordEncoder;
 
     public UserController(UserService userService, PasswordEncoder passwordEncoder) {
@@ -53,6 +53,36 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.convertToResCreateUserDTO(resUser));
     }
 
+    @PutMapping("/user/password")
+    @ApiMessage("Change user password")
+    public ResponseEntity<Void> changePassword(@Valid @RequestBody ReqChangeUserPasswordDTO reqUser)
+            throws IdInvalidException {
+
+        User userDB = this.userService.fetchUserById(reqUser.getId());
+        if (userDB == null) {
+            throw new IdInvalidException("this user does not exist");
+        }
+
+        if (!this.passwordEncoder.matches(reqUser.getOldPassword(), userDB.getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
+        String hashNewPassword = this.passwordEncoder.encode(reqUser.getNewPassword());
+
+        userDB.setPassword(hashNewPassword);
+        return ResponseEntity.status(HttpStatus.OK).body(this.userService.handleChangePassword(userDB));
+    }
+
+    @GetMapping("user/{id}")
+    @ApiMessage("Fetch user by id")
+    public ResponseEntity<User> fetchById(@PathVariable("id") int id) throws IdInvalidException {
+        User user = this.userService.fetchUserById(id);
+        if (user == null) {
+            throw new IdInvalidException("id = " + id + " does not exist");
+        }
+        return ResponseEntity.ok().body(user);
+    }
+
     @PutMapping("/user")
     @ApiMessage("Update a user")
     public ResponseEntity<ResUpdateUserDTO> updateUser(@RequestBody User reqUser) throws IdInvalidException {
@@ -60,7 +90,8 @@ public class UserController {
         if (resUser == null) {
             throw new IdInvalidException("User với id = " + reqUser.getId() + " không tồn tại");
         }
-        return ResponseEntity.ok(this.userService.convertToResUpdateUserDTO(resUser));
+        User updateUser = this.userService.handleUpdateUser(resUser);
+        return ResponseEntity.ok().body(this.userService.convertToResUpdateUserDTO(updateUser));
     }
 
     @DeleteMapping("/user/{id}")

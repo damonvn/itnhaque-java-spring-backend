@@ -55,6 +55,11 @@ public class UserService {
         return userDB;
     }
 
+    public Void handleChangePassword(User user) {
+        this.userRepository.save(user);
+        return null;
+    }
+
     public void handleDeleteUser(int id) {
         this.userRepository.deleteById(id);
     }
@@ -109,7 +114,6 @@ public class UserService {
         res.setCreatedAt(user.getCreatedAt());
         res.setGender(user.getGender());
         res.setAddress(user.getAddress());
-
         return res;
     }
 
@@ -122,6 +126,10 @@ public class UserService {
         res.setUpdatedAt(user.getUpdatedAt());
         res.setGender(user.getGender());
         res.setAddress(user.getAddress());
+        ResUpdateUserDTO.RoleUser roleDTO = new ResUpdateUserDTO.RoleUser();
+        roleDTO.setId(user.getRole().getId());
+        roleDTO.setName(user.getRole().getName());
+        res.setRole(roleDTO);
         return res;
     }
 

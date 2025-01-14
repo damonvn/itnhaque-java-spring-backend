@@ -1,14 +1,21 @@
 package com.onlinecode.itnhaque.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.onlinecode.itnhaque.domain.Chapter;
 import com.onlinecode.itnhaque.domain.Content;
 import com.onlinecode.itnhaque.domain.Course;
 import com.onlinecode.itnhaque.domain.Lesson;
+import com.onlinecode.itnhaque.domain.User;
 import com.onlinecode.itnhaque.domain.response.ResLessonParameters;
+import com.onlinecode.itnhaque.domain.response.ResUserDTO;
+import com.onlinecode.itnhaque.domain.response.ResultPaginationDTO;
 import com.onlinecode.itnhaque.repository.CourseRepository;
 
 @Service
@@ -29,8 +36,19 @@ public class ClientService {
         this.lessonService = lessonService;
     }
 
-    public List<Course> fetchActiveCourses() {
-        return this.courseRepository.findByActiveTrue();
+    public ResultPaginationDTO fetchActiveCourses(Specification<Course> spec, Pageable pageable) {
+        Page<Course> pCourse = this.courseRepository.findAll(spec, pageable);
+        ResultPaginationDTO rs = new ResultPaginationDTO();
+        ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
+
+        mt.setPage(pageable.getPageNumber() + 1);
+        mt.setPageSize(pageable.getPageSize());
+        mt.setPages(pCourse.getTotalPages());
+        mt.setTotal(pCourse.getTotalElements());
+        rs.setMeta(mt);
+        List<Course> listCourses = pCourse.getContent();
+        rs.setResult(listCourses);
+        return rs;
     }
 
     public Integer findNextLesson(int id) {

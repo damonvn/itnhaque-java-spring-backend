@@ -131,7 +131,7 @@ public class CourseService {
         Optional<Course> courseOptional = this.courseRepository.findById(id);
         if (courseOptional.isPresent()) {
             Course courseDB = courseOptional.get();
-            if (!courseDB.isActive()) {
+            if (courseDB.isActive()) {
                 return courseDB;
             }
         }

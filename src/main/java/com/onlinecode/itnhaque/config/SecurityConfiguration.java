@@ -42,7 +42,27 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http,
             CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
         String[] whiteList = {
-                "/api/v1/auth/login", "/api/v1/auth/logout", "/api/v1/auth/account", "/api/v1/auth/refresh",
+                "/storage/**",
+                "/api/v1/auth/login",
+                "/api/v1/auth/logout",
+                "/api/v1/auth/account",
+                "/api/v1/auth/refresh",
+                "/api/v1/client/**",
+                "/api/v1/file/**",
+                // "/api/v1/category/**",
+                // "/api/v1/skill/**",
+        };
+
+        String[] adminAuthList = {
+                "/",
+                "/api/v1/course/**",
+                "/api/v1/chapter/**",
+                "/api/v1/lesson/**",
+                "/api/v1/content/**",
+                "/api/v1/user/**",
+                "/api/v1/role/**",
+                "/api/v1/category/**",
+                "/api/v1/skill/**",
         };
 
         http
@@ -55,8 +75,8 @@ public class SecurityConfiguration {
                                 // .requestMatchers("/secretkey").hasAuthority("ROLE_ADMIN")
                                 // .requestMatchers("/api/v1/users/**").hasAuthority("ROLE_ADMIN")
                                 // .requestMatchers("/api/v1/lesson/**").permitAll()
-                                .requestMatchers("/").hasAuthority("ROLE_ADMIN")
-                                .anyRequest().permitAll())
+                                .requestMatchers(adminAuthList).hasAuthority("ROLE_ADMIN")
+                                .anyRequest().authenticated())
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults())
                         .authenticationEntryPoint(customAuthenticationEntryPoint))
                 .formLogin(f -> f.disable())

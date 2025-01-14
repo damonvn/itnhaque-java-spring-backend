@@ -2,16 +2,16 @@ package com.onlinecode.itnhaque.util;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
-
 import com.onlinecode.itnhaque.domain.response.RestResponse;
+import com.onlinecode.itnhaque.domain.response.error.ResError;
 import com.onlinecode.itnhaque.util.annotation.ApiMessage;
-
 import jakarta.servlet.http.HttpServletResponse;
 
 @ControllerAdvice
@@ -41,13 +41,14 @@ public class FormatRestResponse implements ResponseBodyAdvice<Object> {
         }
 
         if (status >= 400) {
-            return body;
+            res.setStatusCode(status);
+            res.setError(String.valueOf(status));
+            res.setMessage(String.valueOf(status));
         } else {
             res.setData(body);
             ApiMessage message = returnType.getMethodAnnotation(ApiMessage.class);
             res.setMessage(message != null ? message.value() : "CALL API SUCCESS");
         }
-
         return res;
     }
 }

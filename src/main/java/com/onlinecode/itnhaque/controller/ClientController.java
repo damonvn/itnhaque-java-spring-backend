@@ -1,7 +1,7 @@
 package com.onlinecode.itnhaque.controller;
 
-import java.util.List;
-
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,12 +12,14 @@ import com.onlinecode.itnhaque.domain.Course;
 import com.onlinecode.itnhaque.domain.request.ReqContentId;
 import com.onlinecode.itnhaque.domain.response.ResContentDTO;
 import com.onlinecode.itnhaque.domain.response.ResLessonParameters;
+import com.onlinecode.itnhaque.domain.response.ResultPaginationDTO;
 import com.onlinecode.itnhaque.domain.Content;
 import com.onlinecode.itnhaque.service.CourseService;
 import com.onlinecode.itnhaque.service.ClientService;
 import com.onlinecode.itnhaque.service.ContentService;
 import com.onlinecode.itnhaque.util.annotation.ApiMessage;
 import com.onlinecode.itnhaque.util.error.IdInvalidException;
+import com.turkraft.springfilter.boot.Filter;
 
 import jakarta.validation.Valid;
 
@@ -62,8 +64,12 @@ public class ClientController {
 
     @GetMapping("/client/course")
     @ApiMessage("Fetch actived course")
-    public ResponseEntity<List<Course>> fetchActiveCourse() {
-        return ResponseEntity.ok().body(this.clientService.fetchActiveCourses());
+    public ResponseEntity<ResultPaginationDTO> fetchActiveCourse(@Filter Specification<Course> spec,
+            Pageable pageable) {
+
+        Specification<Course> activeSpec = (root, query, criteriaBuilder) -> criteriaBuilder.isTrue(root.get("active"));
+        Specification<Course> combinedSpec = spec == null ? activeSpec : spec.and(activeSpec);
+        return ResponseEntity.ok().body(this.clientService.fetchActiveCourses(combinedSpec, pageable));
     }
 
     @PostMapping("/client/lesson/parameters")
