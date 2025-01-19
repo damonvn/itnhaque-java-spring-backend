@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.onlinecode.itnhaque.domain.Category;
 import com.onlinecode.itnhaque.domain.Skill;
 import com.onlinecode.itnhaque.domain.response.ResultPaginationDTO;
 import com.onlinecode.itnhaque.service.SkillService;
@@ -72,7 +70,10 @@ public class SkillController {
         if (!value.equals(s.getValue()) && this.skillService.existsByValue(s.getValue())) {
             throw new IdInvalidException("Value = " + s.getValue() + " already exists");
         }
-        return ResponseEntity.ok().body(this.skillService.update(s));
+
+        skillDB.setName(s.getName());
+        skillDB.setValue(s.getValue());
+        return ResponseEntity.ok().body(this.skillService.update(skillDB));
     }
 
     @GetMapping("/skill/all")

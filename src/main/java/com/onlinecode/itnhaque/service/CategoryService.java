@@ -2,7 +2,6 @@ package com.onlinecode.itnhaque.service;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -23,12 +22,8 @@ public class CategoryService {
         return this.categoryRepository.save(c);
     }
 
-    public Category update(Category c) {
-        Category cDB = this.fetchById(c.getId());
-        cDB.setName(c.getName());
-        cDB.setValue(c.getValue());
-        Category cUpdate = this.categoryRepository.save(cDB);
-        return cUpdate;
+    public Category update(Category updateCategory) {
+        return this.categoryRepository.save(updateCategory);
     }
 
     public boolean existByName(String name) {

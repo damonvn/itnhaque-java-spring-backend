@@ -23,11 +23,8 @@ public class SkillService {
         return this.skillRepository.save(s);
     }
 
-    public Skill update(Skill s) {
-        Skill skillDB = this.fetchById(s.getId());
-        skillDB.setName(s.getName());
-        skillDB.setValue(s.getValue());
-        return this.skillRepository.save(skillDB);
+    public Skill update(Skill updateSkill) {
+        return this.skillRepository.save(updateSkill);
     }
 
     public List<Skill> fetchAllSkills() {

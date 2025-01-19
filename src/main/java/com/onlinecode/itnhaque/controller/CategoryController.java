@@ -1,6 +1,4 @@
 package com.onlinecode.itnhaque.controller;
-
-import java.io.StringReader;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
@@ -25,7 +23,7 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/api/v1")
@@ -62,7 +60,9 @@ public class CategoryController {
         if (!value.equals(c.getValue()) && this.categoryService.existByValue(c.getValue())) {
             throw new IdInvalidException("The value = " + c.getValue() + " already exists");
         }
-        return ResponseEntity.ok().body(this.categoryService.update(c));
+        categoryDB.setName(c.getName());
+        categoryDB.setValue(c.getValue());
+        return ResponseEntity.ok().body(this.categoryService.update(categoryDB));
     }
 
     @GetMapping("/category/{id}")
