@@ -76,4 +76,27 @@ public class ChapterService {
         }
         return null;
     }
+
+    public Chapter update(Chapter chapter) {
+        return this.chapterRepository.save(chapter);
+    }
+
+    public Integer delete(int id) {
+        Chapter chapter = this.fetchById(id);
+        List<Lesson> lessons = chapter.getLessons();
+
+        Chapter resChapter = chapter.getIndexInCourse() == 0 ? this.chapterRepository.findByIndexInCourse(1)
+                : this.chapterRepository.findByIndexInCourse(chapter.getIndexInCourse() - 1);
+        List<Chapter> chapters = chapter.getCourse().getChapters();
+
+        this.lessonRepository.deleteById(lessons.get(0).getId());
+        this.chapterRepository.deleteById(id);
+        for (Chapter chap : chapters) {
+            if (chap.getIndexInCourse() > chapter.getIndexInCourse()) {
+                chap.setIndexInCourse(chap.getIndexInCourse() - 1);
+                this.chapterRepository.save(chap);
+            }
+        }
+        return resChapter.getLessons().get(0).getContentId();
+    }
 }

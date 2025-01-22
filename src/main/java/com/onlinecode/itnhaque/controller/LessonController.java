@@ -2,6 +2,7 @@ package com.onlinecode.itnhaque.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -58,5 +59,15 @@ public class LessonController {
             throws IdInvalidException {
         Content content = this.lessonService.handleUpdateLessonVideo(req);
         return ResponseEntity.ok().body(content);
+    }
+
+    @DeleteMapping("/lesson/{id}")
+    @ApiMessage("Fetch lesson by id")
+    public ResponseEntity<Integer> delete(@PathVariable("id") int id) throws IdInvalidException {
+        Lesson lesson = this.lessonService.fetchById(id);
+        if (lesson == null) {
+            throw new IdInvalidException("id = " + id + " does not exist");
+        }
+        return ResponseEntity.ok().body(this.lessonService.delete(lesson));
     }
 }

@@ -85,4 +85,25 @@ public class LessonService {
         }
         return null;
     }
+
+    public Integer delete(Lesson l) {
+        Chapter chapter = this.chapterService.fetchById(l.getChapter().getId());
+        List<Lesson> lessons = chapter.getLessons();
+        if (lessons.size() < 2)
+            return null;
+        Integer res = l.getIndexInChapter() == 0 ? lessons.get(1).getContentId() : lessons.get(0).getContentId();
+        this.lessonRepository.deleteById(l.getId());
+        if ((l.getIndexInChapter() + 1) < lessons.size()) {
+            for (Lesson ls : lessons) {
+                if (ls.getIndexInChapter() > l.getIndexInChapter()) {
+                    ls.setIndexInChapter(ls.getIndexInChapter() - 1);
+                    this.lessonRepository.save(ls);
+                }
+            }
+        }
+        this.lessonRepository.deleteById(l.getId());
+        this.contentRepository.deleteById(l.getContentId());
+        return res;
+    }
+
 }

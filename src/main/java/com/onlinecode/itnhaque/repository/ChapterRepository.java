@@ -8,6 +8,8 @@ import com.onlinecode.itnhaque.domain.Chapter;
 
 @Repository
 public interface ChapterRepository extends JpaRepository<Chapter, Integer>,
-        JpaSpecificationExecutor<Chapter> {
+                JpaSpecificationExecutor<Chapter> {
 
+        // Tìm Chapter theo indexInCourse
+        Chapter findByIndexInCourse(int indexInCourse);
 }
