@@ -11,6 +11,7 @@ import com.onlinecode.itnhaque.domain.Content;
 import com.onlinecode.itnhaque.domain.Course;
 import com.onlinecode.itnhaque.domain.Lesson;
 import com.onlinecode.itnhaque.domain.Skill;
+import com.onlinecode.itnhaque.domain.response.ResCourseCardDTO;
 import com.onlinecode.itnhaque.domain.response.ResCourseDTO;
 import com.onlinecode.itnhaque.domain.response.ResultPaginationDTO;
 import com.onlinecode.itnhaque.repository.ChapterRepository;
@@ -151,22 +152,24 @@ public class CourseService {
 
         rs.setMeta(mt);
 
-        List<ResCourseDTO> resultList = new ArrayList<>();
-        for (Course course : pCourse.getContent()) {
-            ResCourseDTO resCourse = new ResCourseDTO();
-
-            resCourse.setId(course.getId());
-            resCourse.setTitle(course.getTitle());
-            resCourse.setImage(course.getImage());
-            resCourse.setDescription(course.getDescription());
-            resCourse.setActive(course.isActive());
-            resCourse.setCreatedAt(course.getCreatedAt());
-            resCourse.setCreatedBy(course.getCreatedBy());
-            resCourse.setUpdatedAt(course.getUpdatedAt());
-            resCourse.setUpdatedBy(course.getUpdatedBy());
-            resultList.add(resCourse);
+        List<Course> listCourses = pCourse.getContent();
+        List<ResCourseCardDTO> resultList = new ArrayList<>();
+        for (Course course : listCourses) {
+            ResCourseCardDTO cDTO = new ResCourseCardDTO();
+            cDTO.setId(course.getId());
+            cDTO.setTitle(course.getTitle());
+            cDTO.setImage(course.getImage());
+            cDTO.setDescription(course.getDescription());
+            cDTO.setActive(course.isActive());
+            cDTO.setCategory(course.getCategory().getName());
+            cDTO.setSkill(course.getSkill().getName());
+            cDTO.setFirstLessonId(course.getChapters().get(0).getLessons().get(0).getContentId());
+            cDTO.setCreatedAt(course.getCreatedAt());
+            cDTO.setCreatedBy(course.getCreatedBy());
+            cDTO.setUpdatedAt(course.getUpdatedAt());
+            cDTO.setUpdatedBy(course.getUpdatedBy());
+            resultList.add(cDTO);
         }
-
         rs.setResult(resultList);
         return rs;
     }

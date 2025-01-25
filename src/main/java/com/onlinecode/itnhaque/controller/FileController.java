@@ -30,7 +30,6 @@ public class FileController {
 
     @Value("${upload-file.base-uri}")
     private String baseURI;
-
     private final FileService fileService;
 
     public FileController(FileService fileService) {
@@ -59,10 +58,7 @@ public class FileController {
         }
         // create a directory if not exist
         this.fileService.createDirectory(baseURI + folder);
-
-        // store file
         String uploadFile = this.fileService.store(file, folder);
-
         ResUploadFileDTO res = new ResUploadFileDTO(uploadFile, Instant.now());
 
         return ResponseEntity.ok().body(res);

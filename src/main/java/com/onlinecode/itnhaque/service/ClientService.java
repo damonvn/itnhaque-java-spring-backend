@@ -1,5 +1,6 @@
 package com.onlinecode.itnhaque.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,6 +14,7 @@ import com.onlinecode.itnhaque.domain.Content;
 import com.onlinecode.itnhaque.domain.Course;
 import com.onlinecode.itnhaque.domain.Lesson;
 import com.onlinecode.itnhaque.domain.User;
+import com.onlinecode.itnhaque.domain.response.ResCourseCardDTO;
 import com.onlinecode.itnhaque.domain.response.ResLessonParameters;
 import com.onlinecode.itnhaque.domain.response.ResUserDTO;
 import com.onlinecode.itnhaque.domain.response.ResultPaginationDTO;
@@ -47,7 +49,25 @@ public class ClientService {
         mt.setTotal(pCourse.getTotalElements());
         rs.setMeta(mt);
         List<Course> listCourses = pCourse.getContent();
-        rs.setResult(listCourses);
+        List<ResCourseCardDTO> listCoursesDTO = new ArrayList<>();
+        for (Course course : listCourses) {
+            ResCourseCardDTO cDTO = new ResCourseCardDTO();
+            cDTO.setId(course.getId());
+            cDTO.setTitle(course.getTitle());
+            cDTO.setImage(course.getImage());
+            cDTO.setDescription(course.getDescription());
+            cDTO.setActive(course.isActive());
+            cDTO.setCategory(course.getCategory().getName());
+            cDTO.setSkill(course.getSkill().getName());
+            cDTO.setFirstLessonId(course.getChapters().get(0).getLessons().get(0).getContentId());
+            cDTO.setCreatedAt(course.getCreatedAt());
+            cDTO.setCreatedBy(course.getCreatedBy());
+            cDTO.setUpdatedAt(course.getUpdatedAt());
+            cDTO.setUpdatedBy(course.getUpdatedBy());
+            listCoursesDTO.add(cDTO);
+        }
+
+        rs.setResult(listCoursesDTO);
         return rs;
     }
 
