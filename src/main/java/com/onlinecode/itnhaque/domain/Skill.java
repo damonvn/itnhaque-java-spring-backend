@@ -28,6 +28,8 @@ public class Skill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(columnDefinition = "VARCHAR(255) COLLATE utf8_bin")
     private String name;
 
     @Column(unique = true)
@@ -52,7 +54,7 @@ public class Skill {
 
     @PreUpdate
     public void handleBeforeUpdate() {
-        this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
+        this.updatedBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
                 ? SecurityUtil.getCurrentUserLogin().get()
                 : "";
         this.updatedAt = Instant.now();

@@ -1,5 +1,6 @@
 package com.onlinecode.itnhaque.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -28,6 +29,7 @@ public class Lesson {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(columnDefinition = "VARCHAR(255) COLLATE utf8_bin")
     @NotBlank(message = "title canot be empty")
     private String title;
     private String linkVideo;
@@ -55,7 +57,7 @@ public class Lesson {
 
     @PreUpdate
     public void handleBeforeUpdate() {
-        this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
+        this.updatedBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
                 ? SecurityUtil.getCurrentUserLogin().get()
                 : "";
         this.updatedAt = Instant.now();

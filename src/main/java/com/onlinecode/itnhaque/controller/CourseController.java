@@ -4,6 +4,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,7 +50,7 @@ public class CourseController {
     }
 
     @GetMapping("/course/update/{id}")
-    @ApiMessage("Fetch course by id")
+    @ApiMessage("Update course")
     public ResponseEntity<ResCourseDTO> getUpdateCourseById(@PathVariable("id") int id) throws IdInvalidException {
         ResCourseDTO course = this.courseService.fetchUpdateCourseById(id);
         if (course == null) {
@@ -83,5 +84,21 @@ public class CourseController {
             throw new IdInvalidException("Role with id = " + c.getId() + " does not exist");
         }
         return ResponseEntity.ok().body(this.courseService.updateCourseActive(c));
+    }
+
+    @DeleteMapping("course/{id}")
+    @ApiMessage("Delete a course")
+    public ResponseEntity<Void> delete(@PathVariable("id") int id) throws IdInvalidException {
+        Course course = this.courseService.fetchById(id);
+        if (course == null) {
+            throw new IdInvalidException("id = " + id + " does not exist");
+        }
+        if (course.getChapters().size() > 1) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+        if (course.getChapters().get(0).getLessons().size() > 1) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+        return ResponseEntity.ok().body(this.courseService.delete(course));
     }
 }

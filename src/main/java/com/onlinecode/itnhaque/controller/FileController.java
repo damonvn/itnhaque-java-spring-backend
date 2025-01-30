@@ -1,28 +1,31 @@
 package com.onlinecode.itnhaque.controller;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.http.HttpHeaders;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
+import com.onlinecode.itnhaque.domain.Filestore;
+import com.onlinecode.itnhaque.domain.response.ResultPaginationDTO;
 import com.onlinecode.itnhaque.domain.response.file.ResUploadFileDTO;
 import com.onlinecode.itnhaque.service.FileService;
 import com.onlinecode.itnhaque.util.annotation.ApiMessage;
+import com.onlinecode.itnhaque.util.error.IdInvalidException;
 import com.onlinecode.itnhaque.util.error.StorageException;
+import com.turkraft.springfilter.boot.Filter;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -62,5 +65,21 @@ public class FileController {
         ResUploadFileDTO res = new ResUploadFileDTO(uploadFile, Instant.now());
 
         return ResponseEntity.ok().body(res);
+    }
+
+    @GetMapping("/file")
+    @ApiMessage("Fetch files pagination")
+    public ResponseEntity<ResultPaginationDTO> fetchFiles(@Filter Specification<Filestore> spec, Pageable pageable) {
+        return ResponseEntity.ok().body(this.fileService.fetchFilesPagination(spec, pageable));
+    }
+
+    @DeleteMapping("/file/{id}")
+    @ApiMessage("Delete a file")
+    public ResponseEntity<Boolean> delete(@PathVariable("id") int id) throws IdInvalidException {
+        Filestore file = this.fileService.findById(id);
+        if (file == null) {
+            throw new IdInvalidException("File with id = " + id + " does not exist in database");
+        }
+        return ResponseEntity.ok().body(this.fileService.deleteFile(file.getName(), file.getFolder(), file.getId()));
     }
 }

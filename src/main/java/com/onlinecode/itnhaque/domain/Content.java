@@ -27,6 +27,8 @@ public class Content {
     private int chapterId;
     private int lessonId;
     private String lessonVideoURL;
+
+    @Column(columnDefinition = "VARCHAR(255) COLLATE utf8_bin")
     @NotBlank(message = "title cannot be empty")
     private String title;
 

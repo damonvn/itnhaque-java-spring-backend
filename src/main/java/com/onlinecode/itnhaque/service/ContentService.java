@@ -23,7 +23,30 @@ public class ContentService {
         Optional<Content> optionalContent = this.contentRepository.findById(id);
         if (optionalContent.isPresent()) {
             return optionalContent.get();
+        }
+        return null;
+    }
 
+    public ResContentDTO fetchAdminContentById(Integer id) {
+        Optional<Content> optionalContent = this.contentRepository.findById(id);
+        if (optionalContent.isPresent()) {
+            ResContentDTO contentDTO = new ResContentDTO();
+            Content content = optionalContent.get();
+            Course course = this.courseService.fetchById(content.getCourseId());
+            contentDTO.setId(content.getId());
+            contentDTO.setCourseId(content.getCourseId());
+            contentDTO.setCourseTitle(course.getTitle());
+            contentDTO.setChapterId(content.getChapterId());
+            contentDTO.setLessonId(content.getLessonId());
+            contentDTO.setLessonVideoURL(content.getLessonVideoURL());
+            contentDTO.setTitle(content.getTitle());
+            contentDTO.setContent(content.getContent());
+            contentDTO.setCreatedAt(content.getCreatedAt());
+            contentDTO.setUpdatedAt(content.getUpdatedAt());
+            contentDTO.setCreatedBy(content.getCreatedBy());
+            contentDTO.setUpdatedBy(content.getUpdatedBy());
+            contentDTO.setCourseTitle(course.getTitle());
+            return contentDTO;
         }
         return null;
     }

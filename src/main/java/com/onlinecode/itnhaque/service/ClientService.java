@@ -156,7 +156,6 @@ public class ClientService {
             res.setLessonInChapterIndex(lesson.getIndexInChapter());
             res.setChapterLessonSize(chapter.getLessons().size());
         }
-
         return res;
     }
 }

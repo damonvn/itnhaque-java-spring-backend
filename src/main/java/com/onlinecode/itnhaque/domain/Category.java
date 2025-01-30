@@ -27,6 +27,8 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(columnDefinition = "VARCHAR(255) COLLATE utf8_bin")
     private String name;
 
     @Column(unique = true)
